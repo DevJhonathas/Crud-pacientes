@@ -1,9 +1,36 @@
 
 <script>
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
+import registerPatient from "@/components/registerPatient.vue"
+
+var filterParams = {
+  comparator: (filterLocalDateAtMidnight, cellValue) => {
+    var dateAsString = cellValue;
+    if (dateAsString == null) return -1;
+    var dateParts = dateAsString.split("/");
+    var cellDate = new Date(
+      Number(dateParts[2]),
+      Number(dateParts[1]) - 1,
+      Number(dateParts[0]),
+    );
+    if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+      return 0;
+    }
+    if (cellDate < filterLocalDateAtMidnight) {
+      return -1;
+    }
+    if (cellDate > filterLocalDateAtMidnight) {
+      return 1;
+    }
+    return 0;
+  },
+  minValidYear: 2000,
+  maxValidYear: 2021,
+  inRangeFloatingFilterDateFormat: "Do MMM YYYY",
+};
 
 export default {
  name: "App",
@@ -13,15 +40,15 @@ export default {
  setup() {
   // Row Data: The data to be displayed.
   const rowData = ref([
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "ge.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", data: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Tesla", sobrenome: "sobrenome Y", email: "ge.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
+    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Male" },
   ]);
 
   // Column Definitions: Defines the columns to be displayed.
@@ -69,9 +96,10 @@ export default {
     },
     { 
       headerName: "Data",
-      field: "data",
-      editable:true,
-      filter: true,
+      field: "date",
+      filter: 'agDateColumnFilter',
+      filterParams: filterParams,
+      editable: true,
       width: 125,
       flex: 2,
       autoHeight: true,
@@ -81,6 +109,7 @@ export default {
       headerName: "Educação",
       field: "educacao",
       filter: true,
+      editable:true,
       width: 150,
       flex: 2,
       autoHeight: true,
@@ -98,16 +127,57 @@ export default {
     }
      
   ]);
+  const dataTypeDefinitions = ref(null);
+
+    onBeforeMount(() => {
+      dataTypeDefinitions.value = {
+        dateString: {
+          baseDataType: "dateString",
+          extendsDataType: "dateString",
+          valueParser: (params) =>
+            params.newValue != null &&
+            params.newValue.match("\\d{2}/\\d{2}/\\d{4}")
+              ? params.newValue
+              : null,
+          valueFormatter: (params) =>
+            params.value == null ? "" : params.value,
+          dataTypeMatcher: (value) =>
+            typeof value === "string" && !!value.match("\\d{2}/\\d{2}/\\d{4}"),
+          dateParser: (value) => {
+            if (value == null || value === "") {
+              return undefined;
+            }
+            const dateParts = value.split("/");
+            return dateParts.length === 3
+              ? new Date(
+                  parseInt(dateParts[2]),
+                  parseInt(dateParts[1]) - 1,
+                  parseInt(dateParts[0]),
+                )
+              : undefined;
+          },
+          dateFormatter: (value) => {
+            if (value == null) {
+              return undefined;
+            }
+            const date = String(value.getDate());
+            const month = String(value.getMonth() + 1);
+            return `${date.length === 1 ? "0" + date : date}/${month.length === 1 ? "0" + month : month}/${value.getFullYear()}`;
+          },
+        },
+      };
+    });
 
   return {
     rowData,
     colDefs,
+    dataTypeDefinitions
   };
   },
 };
 </script>
 <template>
-  <div class="d-sm-flex justify-end align-end flex-column">
+  <div class="d-sm-flex justify-end align-end flex-column position-relative">
     <v-hover v-slot="{ isHovering, props }" open-delay="100">
         <v-card v-bind="props" :class="{ 'on-hover': isHovering }" class="bg-green ma-2  text-center text-subtitle-1" :elevation="isHovering ? 8 : 0" width="150px">
         <button>
@@ -118,9 +188,11 @@ export default {
       <ag-grid-vue
         :rowData="rowData"
         :columnDefs="colDefs"
+        :dataTypeDefinitions="dataTypeDefinitions"
         style="height: 45vh; width:60vw;"
         class="ag-theme-quartz text-center"
       >
       </ag-grid-vue>
-  </div>
+    </div>
+    <registerPatient></registerPatient>
 </template>
