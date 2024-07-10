@@ -1,4 +1,5 @@
 <template>
+    <p @click="dialog = true">clique aqui</p>
     <form class="position-absolute d-sm-flex justify-center align-center">
         <v-card 
         class="mx-auto d-none"
@@ -81,5 +82,12 @@
 </template>
 
 <script setup>
-
+    // new Vue({
+    // el: '#app',
+    // data() {
+    //     return {
+    //     dialog: false
+    //     }
+    // }
+    // })
 </script>
