@@ -1,14 +1,12 @@
 <template>
-    <p @click="dialog = true">clique aqui</p>
-    <form class="position-absolute d-sm-flex justify-center align-center">
+    <form>
         <v-card 
-        class="mx-auto d-none"
+        class="mx-auto"
         width="500"
         title="Cadastro Paciente"
-    >
-        <v-container>
+        ><v-container>
         <v-text-field
-            v-model="primeiro"
+            v-model="form.primeiro_nome"
             color="primary"
             label="Primeiro Nome"
             placeholder="Coloque seu nome"
@@ -16,7 +14,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="sobrenome"
+            v-model="form.sobrenome"
             color="primary"
             label="Sobrenome"
             placeholder="Coloque seu sobrenome"
@@ -24,7 +22,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="email"
+            v-model="form.email"
             color="primary"
             label="Email"
             placeholder="Coloque seu email"
@@ -33,7 +31,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="cpf"
+            v-model="form.cpf"
             color="primary"
             label="CPF"
             placeholder="Coloque seu CPF"
@@ -41,7 +39,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="nascimento"
+            v-model="form.nascimento"
             color="primary"
             label="Data de Nascimento"
             variant="underlined"
@@ -49,7 +47,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="educacao"
+            v-model="form.educacao"
             color="primary"
             label="Educação"
             placeholder="Coloque seu nível de educação"
@@ -57,7 +55,7 @@
         ></v-text-field>
 
         <v-text-field
-            v-model="sexo"
+            v-model="form.sexo"
             color="primary"
             label="Sexo"
             placeholder="Coloque seu sexo"
@@ -71,9 +69,8 @@
         <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="success">
+        <v-btn color="success" @click.prevent="salvarPaciente">
             Confirmar
-
             <v-icon icon="mdi-check-circle" end></v-icon>
         </v-btn>
         </v-card-actions>
@@ -82,12 +79,35 @@
 </template>
 
 <script setup>
-    // new Vue({
-    // el: '#app',
-    // data() {
-    //     return {
-    //     dialog: false
-    //     }
-    // }
-    // })
+    import { ref } from 'vue';
+
+    const form = ref({
+        primeiro_nome: '',
+        sobrenome: '',
+        email: '',
+        cpf: '',
+        educacao: '',
+        sexo:'',
+        nascimento:''
+    });
+
+    const salvarPaciente = () => {
+        const paciente = {
+            primeiro_nome: form.value.primeiro_nome,
+            sobrenome: form.value.sobrenome,
+            email: form.value.email,
+            cpf: form.value.cpf,
+            nascimento: form.value.nascimento,
+            educacao: form.value.educacao,
+            sexo: form.value.sexo,
+        };
+
+        const pacientesExistentes = JSON.parse(localStorage.getItem('pacientes')) || [];
+
+        pacientesExistentes.push(paciente);
+
+        localStorage.setItem('pacientes', JSON.stringify(pacientesExistentes));
+        
+        Object.keys(form.value).forEach(key => form.value[key] = '');
+};
 </script>

@@ -1,10 +1,31 @@
+<template>
+  <div class="d-sm-flex justify-end align-end flex-column position-relative">
+    <v-hover v-slot="{ isHovering, hovering }" open-delay="100">
+        <v-dialog width="auto">
+          <template #activator="{ props }">
+            <v-btn class="bg-green ma-2  text-center text-subtitle-1" v-bind="hovering, props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">cadastrar </v-btn>
+          </template>
+          <registerPatient></registerPatient>
+        </v-dialog>
+    </v-hover>
+      <ag-grid-vue
+        :rowData="rowData"
+        :columnDefs="colDefs"
+        :dataTypeDefinitions="dataTypeDefinitions"
+        style="height: 45vh; width:60vw;"
+        class="ag-theme-quartz text-center"
+      >
+      </ag-grid-vue>
+    </div>
+</template>
 
 <script>
 import { onBeforeMount, ref } from 'vue';
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
-import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import { AgGridVue } from "ag-grid-vue3";
 import registerPatient from "@/components/registerPatient.vue"
+import deletePatient from '@/controllers/deletePatient';
 
 var filterParams = {
   comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -35,10 +56,10 @@ var filterParams = {
 export default {
  name: "App",
  components: {
-   AgGridVue, // Add Vue Data Grid component
+   AgGridVue,
  },
  setup() {
-  // Row Data: The data to be displayed.
+
   const rowData = ref([
     { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
     { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
@@ -51,7 +72,7 @@ export default {
     { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
   ]);
 
-  // Column Definitions: Defines the columns to be displayed.
+ 
   const colDefs = ref([
     { 
       headerName: "Nome",
@@ -124,8 +145,25 @@ export default {
       flex: 2,
       autoHeight: true,
       resizable: false
+    },
+    {
+      headerName: "Ação",
+      field: "action",
+      width: 100,
+      cellRendererFramework: {
+        template: `<v-btn color="error" @click="deletePatient(data)" icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>`,
+        methods: {
+          deleteRow(rowData) {
+            const index = rowData.rowIndex;
+            rowData.api.applyTransaction({ remove: [rowData.data] });
+          }
+        }
+      },
+      resizable: false,
+      autoHeight: true
     }
-     
   ]);
   const dataTypeDefinitions = ref(null);
 
@@ -171,26 +209,9 @@ export default {
   return {
     rowData,
     colDefs,
-    dataTypeDefinitions
+    dataTypeDefinitions,
+    deletePatient
   };
   },
 };
 </script>
-<template>
-  <div class="d-sm-flex justify-end align-end flex-column position-relative">
-    <v-hover v-slot="{ isHovering, props }" open-delay="100">
-        <v-btn class="bg-green ma-2  text-center text-subtitle-1" v-bind="props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">
-            cadastrar 
-        </v-btn>
-    </v-hover>
-      <ag-grid-vue
-        :rowData="rowData"
-        :columnDefs="colDefs"
-        :dataTypeDefinitions="dataTypeDefinitions"
-        style="height: 45vh; width:60vw;"
-        class="ag-theme-quartz text-center"
-      >
-      </ag-grid-vue>
-    </div>
-    <registerPatient></registerPatient>
-</template>
