@@ -1,79 +1,56 @@
-# Vuetify (Default)
+# Projeto Lista Pacientes: CRUD com Vue.js, Vuetify, TinyMCE e AG-grid
 
-This is the official scaffolding tool for Vuetify, designed to give you a head start in building your new Vuetify application. It sets up a base template with all the necessary configurations and standard directory structure, enabling you to begin development without the hassle of setting up the project from scratch.
+## Descrição
 
-## ❗️ Important Links
+Este projeto consiste em um CRUD (Create, Read, Update, Delete) desenvolvido utilizando Vue.js em conjunto com Vuetify para estilização, TinyMCE para edição avançada de texto e AG-grid para exibição e manipulação eficiente de dados em uma tabela.
 
-- 📄 [Docs](https://vuetifyjs.com/)
-- 🚨 [Issues](https://issues.vuetifyjs.com/)
-- 🏬 [Store](https://store.vuetifyjs.com/)
-- 🎮 [Playground](https://play.vuetifyjs.com/)
-- 💬 [Discord](https://community.vuetifyjs.com)
+### Link da aplicação: https://cg-crud-git-master-jhonathas-projects.vercel.app
 
-## 💿 Install
+## Funcionalidades
 
-Set up your project using your preferred package manager. Use the corresponding command to install the dependencies:
+### CRUD
 
-| Package Manager                                                | Command        |
-|---------------------------------------------------------------|----------------|
-| [yarn](https://yarnpkg.com/getting-started)                   | `yarn install` |
-| [npm](https://docs.npmjs.com/cli/v7/commands/npm-install)     | `npm install`  |
-| [pnpm](https://pnpm.io/installation)                          | `pnpm install` |
-| [bun](https://bun.sh/#getting-started)                        | `bun install`  |
+- **Cadastro**: Ao clicar no botão verde "Cadastrar Lista", um modal é exibido para inserção das informações. Após confirmar, os dados são automaticamente adicionados à tabela.
+- **Edição**: Cada linha da tabela pode ser editada basta clicar duas vezes sobre ela e modificar os dados existentes.
+- **Exclusão**: Há um botão de lixeira em cada linha da tabela para excluir individualmente a linha correspondente.
+- **Deleção em Massa**: O botão vermelho "Deletar Lista" exclui todos os registros da tabela de uma vez.
 
-After completing the installation, your environment is ready for Vuetify development.
+### Responsividade
 
-## ✨ Features
+- O projeto é totalmente responsivo, adaptando-se a diferentes tamanhos de tela, proporcionando uma experiência consistente em dispositivos móveis e desktop.
 
-- 🖼️ **Optimized Front-End Stack**: Leverage the latest Vue 3 and Vuetify 3 for a modern, reactive UI development experience. [Vue 3](https://v3.vuejs.org/) | [Vuetify 3](https://vuetifyjs.com/en/)
-- 🗃️ **State Management**: Integrated with [Pinia](https://pinia.vuejs.org/), the intuitive, modular state management solution for Vue.
-- 🚦 **Routing and Layouts**: Utilizes Vue Router for SPA navigation and vite-plugin-vue-layouts for organizing Vue file layouts. [Vue Router](https://router.vuejs.org/) | [vite-plugin-vue-layouts](https://github.com/JohnCampionJr/vite-plugin-vue-layouts)
-- ⚡ **Next-Gen Tooling**: Powered by Vite, experience fast cold starts and instant HMR (Hot Module Replacement). [Vite](https://vitejs.dev/)
-- 🧩 **Automated Component Importing**: Streamline your workflow with unplugin-vue-components, automatically importing components as you use them. [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components)
+### Página de Erro
 
-These features are curated to provide a seamless development experience from setup to deployment, ensuring that your Vuetify application is both powerful and maintainable.
+- Uma página de erro personalizada é exibida quando o usuário tenta acessar uma URL inválida.
+- A página apresenta uma mensagem informativa de que a página não foi encontrada.
+- Inclui um botão "Voltar para Tela Inicial" que redireciona o usuário de volta à página principal do projeto.
+- Abaixo da mensagem, há um gif animado de um coelho com uma xícara de café para adicionar um toque amigável à experiência de usuário.
 
-## 💡 Usage
+## Tecnologias Utilizadas
 
-This section covers how to start the development server and build your project for production.
+- **Vue.js**: Framework JavaScript progressivo para construir interfaces de usuário.
+- **Vuetify**: Framework de componentes baseado em Material Design para Vue.js.
+- **TinyMCE**: Editor de texto JavaScript que facilita a edição avançada de conteúdo.
+- **AG-grid**: Biblioteca avançada de grid para exibição e manipulação de dados tabulares.
+- **Vue-router**: Biblioteca avançada de grid para exibição e manipulação de dados tabulares.
 
-### Starting the Development Server
+## Instalação e Uso
 
-To start the development server with hot-reload, run the following command. The server will be accessible at [http://localhost:3000](http://localhost:3000):
+Para rodar o projeto localmente, siga estas etapas:
 
-```bash
-yarn dev
-```
+1. Clone este repositório:
+git clone https://github.com/DevJhonathas/CG-CRUD.git
 
-(Repeat for npm, pnpm, and bun with respective commands.)
+2. Instale as dependências usando npm ou yarn:
+**npm install**
+ou
+**yarn install**
 
-> Add NODE_OPTIONS='--no-warnings' to suppress the JSON import warnings that happen as part of the Vuetify import mapping. If you are on Node [v21.3.0](https://nodejs.org/en/blog/release/v21.3.0) or higher, you can change this to NODE_OPTIONS='--disable-warning=5401'. If you don't mind the warning, you can remove this from your package.json dev script.
+3. Inicie o servidor de desenvolvimento:
+**npm run dev**
+ou
+**yarn dev**
+4. Abra o navegador e acesse `http://localhost:3000` (ou a porta configurada).
 
-### Building for Production
 
-To build your project for production, use:
-
-```bash
-yarn build
-```
-
-(Repeat for npm, pnpm, and bun with respective commands.)
-
-Once the build process is completed, your application will be ready for deployment in a production environment.
-
-## 💪 Support Vuetify Development
-
-This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library with a comprehensive collection of Vue components. Vuetify is an MIT licensed Open Source project that has been made possible due to the generous contributions by our [sponsors and backers](https://vuetifyjs.com/introduction/sponsors-and-backers/). If you are interested in supporting this project, please consider:
-
-- [Requesting Enterprise Support](https://support.vuetifyjs.com/)
-- [Sponsoring John on Github](https://github.com/users/johnleider/sponsorship)
-- [Sponsoring Kael on Github](https://github.com/users/kaelwd/sponsorship)
-- [Supporting the team on Open Collective](https://opencollective.com/vuetify)
-- [Becoming a sponsor on Patreon](https://www.patreon.com/vuetify)
-- [Becoming a subscriber on Tidelift](https://tidelift.com/subscription/npm/vuetify)
-- [Making a one-time donation with Paypal](https://paypal.me/vuetify)
-
-## 📑 License
-[MIT](http://opensource.org/licenses/MIT)
-
-Copyright (c) 2016-present Vuetify, LLC
+**Espero que este README.md esteja mais alinhado com suas expectativas!**
