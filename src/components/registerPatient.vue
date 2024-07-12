@@ -1,8 +1,7 @@
 <template>
-    <form>
+    <form class="d-sm-flex justify-center align-center">
         <v-card 
-        class="mx-auto"
-        width="500"
+        class="mx-auto custom-size"
         title="Cadastro Paciente"
         ><v-container>
         <v-text-field
@@ -163,3 +162,27 @@
     }
 }
 </script>
+
+<style>
+    .custom-size{
+        width: 20vw;
+    }
+
+    @media (max-width: 1920px){
+        .custom-size{
+            width: 40vw;
+        }
+    }
+
+    @media (max-width: 900px){
+        .custom-size{
+            width: 70vw;
+        }
+    }
+
+    @media (max-width: 490px){
+        .custom-size{
+            width: 90vw;
+        }
+    }
+</style>
