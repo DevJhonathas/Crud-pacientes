@@ -102,13 +102,16 @@
     });
 
  
+ 
     const formatData = (data) => {
-    const dt = new Date(data);
-    const day = dt.getDate().toString().padStart(2, '0');
-    const month = (dt.getMonth() + 1).toString().padStart(2, '0');
-    const year = dt.getFullYear();
-    return `${day}/${month}/${year}`;
-};
+        const dt = data instanceof Date ? data : new Date(data);
+        const day = dt.getUTCDate().toString().padStart(2, '0');
+        const month = (dt.getUTCMonth() + 1).toString().padStart(2, '0');
+        const year = dt.getUTCFullYear();
+
+
+        return `${day}/${month}/${year}`;
+    };
 
     const savePatient = () => {
         if (form.value.nascimento) {
