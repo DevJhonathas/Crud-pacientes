@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="onClick" class="btn-danger">
+  <v-btn @click="onClick" class="btn-error">
     <v-icon>mdi-delete</v-icon>
   </v-btn>
 </template>

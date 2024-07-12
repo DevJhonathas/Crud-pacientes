@@ -16,7 +16,7 @@
         :columnDefs="colDefs"
         :dataTypeDefinitions="dataTypeDefinitions"
         @cellValueChanged="onCellValueChanged"
-        style="height: 45vh; width:60vw;"
+        style="height: 45vh; min-width:60vw;"
         class="ag-theme-quartz text-center"
       >
       </ag-grid-vue>
@@ -81,9 +81,10 @@ export default {
       editable:true,
       filter: true,
       width: 150,
+      minWidth: 100,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     { 
       headerName: "Sobrenome",
@@ -91,9 +92,10 @@ export default {
       editable:true,
       filter: true,
       width: 250,
+      minWidth: 100,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
       
     },
     { 
@@ -102,9 +104,10 @@ export default {
       editable:true,
       filter: true,
       width: 250,
+      minWidth: 100,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     { 
       headerName: "CPF",
@@ -112,9 +115,10 @@ export default {
       editable:true,
       filter: true,
       width: 250,
+      minWidth: 100,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     { 
       headerName: "Data",
@@ -123,29 +127,32 @@ export default {
       filterParams: filterParams,
       editable: true,
       width: 125,
+      minWidth: 100,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     { 
       headerName: "Educação",
       field: "educacao",
       filter: true,
       editable:true,
+      minWidth: 100,
       width: 150,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     { 
       headerName: "Genêro",
       field: "sexo",
       editable:true,
       filter: true,
+      minWidth: 100,
       width: 150,
       flex: 2,
       autoHeight: true,
-      resizable: false
+      resizable: true
     },
     {
         headerName: "Ação",
@@ -155,7 +162,7 @@ export default {
         cellRendererParams: {
           clicked: deleteRow 
         },
-        resizable: false,
+        resizable: true,
         autoHeight: true
       }
     ]);
