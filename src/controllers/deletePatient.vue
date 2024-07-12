@@ -14,18 +14,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.btn-danger {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-danger:hover {
-  background-color: darkred;
-}
-</style>

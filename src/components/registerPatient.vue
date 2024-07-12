@@ -119,11 +119,26 @@
         return;
         }
 
+        
         const formatCPF = (cpf) => {
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         };
+        
+        const limit_cpf_validator = () => {
+            const cpf_number = form.value.cpf; //pego valor
+            const cpf_limit = 14; 
+            
+            if(cpf_number.length >= cpf_limit){
+                const format_cpf = formatCPF(form.value.cpf);
+                const format_with_limit_cpf = format_cpf.slice(0, cpf_limit);
+                return format_with_limit_cpf;
+            } else{
+                const format_cpf = formatCPF(form.value.cpf);
+                return format_cpf;
+            }
+        }
 
-        const formatted_CPF = formatCPF(form.value.cpf);
+        const formatted_CPF = limit_cpf_validator();
         const formatted_birth = formatData(birth_date);
         const emailWithSuffix = form.value.email.includes('@') ? form.value.email : form.value.email + '@gmail.com';
 
@@ -144,6 +159,7 @@
     localStorage.setItem('patientList', JSON.stringify(pacientesExistentes));
     
     Object.keys(form.value).forEach(key => form.value[key] = '');
+    window.location.reload()
     }
 }
 </script>

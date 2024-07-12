@@ -3,8 +3,11 @@
     <v-hover v-slot="{ isHovering, hovering }" open-delay="100">
         <v-dialog width="auto">
           <template #activator="{ props }">
-            <v-btn class="bg-green ma-2  text-center text-subtitle-1" v-bind="hovering, props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">cadastrar</v-btn>
-          </template>
+            <div class="d-sm-flex flex-row">
+              <v-btn class="bg-red ma-2 text-center text-subtitle-1" v-bind="hovering" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px" @click="deleteStorage">Deleta lista</v-btn>
+              <v-btn class="bg-green ma-2 text-center text-subtitle-1" v-bind="hovering, props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">cadastra lista</v-btn>
+            </div>
+            </template>
           <registerPatient></registerPatient>
         </v-dialog>
     </v-hover>
@@ -21,7 +24,7 @@
 </template>
 
 <script>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref  } from 'vue';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { AgGridVue } from "ag-grid-vue3";
@@ -50,7 +53,7 @@ var filterParams = {
     return 0;
   },
   minValidYear: 2000,
-  maxValidYear: 2021,
+  maxValidYear: 2999,
   inRangeFloatingFilterDateFormat: "Do MMM YYYY",
 };
 
@@ -63,15 +66,14 @@ export default {
  setup() {
 
   const rowData = ref([]);
-
+ 
   const deleteRow = (data) => {
       const allPatients = JSON.parse(localStorage.getItem('patientList')) || [];
       const updatedPatients = allPatients.filter(patient => patient.cpf !== data.cpf);
       localStorage.setItem('patientList', JSON.stringify(updatedPatients));
-
       rowData.value = updatedPatients;
-    };
- 
+  };
+
   const colDefs = ref([
     { 
       headerName: "Nome",
@@ -149,62 +151,59 @@ export default {
         headerName: "Ação",
         field: "action",
         width: 100,
-        cellRendererFramework: deletePatient, 
+        cellRenderer: deletePatient, 
         cellRendererParams: {
           clicked: deleteRow 
         },
         resizable: false,
         autoHeight: true
       }
-  ]);
-  const dataTypeDefinitions = ref(null);
+    ]);
 
-    onBeforeMount(() => {
-      dataTypeDefinitions.value = {
-        dateString: {
-          baseDataType: "dateString",
-          extendsDataType: "dateString",
-          valueParser: (params) =>
-            params.newValue != null &&
-            params.newValue.match("\\d{2}/\\d{2}/\\d{4}")
-              ? params.newValue
-              : null,
-          valueFormatter: (params) =>
-            params.value == null ? "" : params.value,
-          dataTypeMatcher: (value) =>
-            typeof value === "string" && !!value.match("\\d{2}/\\d{2}/\\d{4}"),
-          dateParser: (value) => {
-            if (value == null || value === "") {
-              return undefined;
-            }
-            const dateParts = value.split("/");
-            return dateParts.length === 3
-              ? new Date(
-                  parseInt(dateParts[2]),
-                  parseInt(dateParts[1]) - 1,
-                  parseInt(dateParts[0]),
-                )
-              : undefined;
-          },
-          dateFormatter: (value) => {
-            if (value == null) {
-              return undefined;
-            }
-            const date = String(value.getDate());
-            const month = String(value.getMonth() + 1);
-            return `${date.length === 1 ? "0" + date : date}/${month.length === 1 ? "0" + month : month}/${value.getFullYear()}`;
-          },
+  const dataTypeDefinitions = ref(null);
+  
+  onBeforeMount(() => {
+    dataTypeDefinitions.value = {
+      dateString: {
+        baseDataType: "dateString",
+        extendsDataType: "dateString",
+        valueParser: (params) =>
+          params.newValue != null &&
+          params.newValue.match("\\d{2}/\\d{2}/\\d{4}")
+            ? params.newValue
+            : null,
+        valueFormatter: (params) =>
+          params.value == null ? "" : params.value,
+        dataTypeMatcher: (value) =>
+          typeof value === "string" && !!value.match("\\d{2}/\\d{2}/\\d{4}"),
+        dateParser: (value) => {
+          if (value == null || value === "") {
+            return undefined;
+          }
+          const dateParts = value.split("/");
+          return dateParts.length === 3
+            ? new Date(
+                parseInt(dateParts[2]),
+                parseInt(dateParts[1]) - 1,
+                parseInt(dateParts[0]),
+              )
+            : undefined;
         },
-      };
-      const patientSaves = JSON.parse(localStorage.getItem('patientList')) || [];
-      rowData.value = patientSaves;
+        dateFormatter: (value) => {
+          if (value == null) {
+            return undefined;
+          }
+          const date = String(value.getDate());
+          const month = String(value.getMonth() + 1);
+          return `${date.length === 1 ? "0" + date : date}/${month.length === 1 ? "0" + month : month}/${value.getFullYear()}`;
+        },
+      },
+    };
+    const patientSaves = JSON.parse(localStorage.getItem('patientList')) || [];
+    rowData.value = patientSaves;
 
     });
 
-    const refreshTable = () => {
-      gridApi.refreshCells({ force: true });
-    };
-    
     const onCellValueChanged = (event) => {
     const updatedData = event.data;
     const allPatients = JSON.parse(localStorage.getItem('patientList')) || [];
@@ -213,15 +212,22 @@ export default {
       allPatients[index] = updatedData;
       localStorage.setItem('patientList', JSON.stringify(allPatients));
     }
-
-    refreshTable();
   };
+
+
+  const deleteStorage = () => {
+      localStorage.removeItem('patientList');
+      alert('Dados deletados da lista de pacientes!');
+      window.location.reload()
+    };
 
   return {
     rowData,
     colDefs,
     dataTypeDefinitions,
-    onCellValueChanged
+    onCellValueChanged,
+    deleteStorage,
+    deleteRow
   };
   },
 };
