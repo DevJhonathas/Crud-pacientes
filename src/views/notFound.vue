@@ -10,7 +10,7 @@
     </v-row>
     <v-row align="center" justify="center" class="ma-5">
       <v-col cols="12">
-        <img src="../assets/bunny_with_coffe.gif" alt="Gif fofo animado" style="max-width: 10%;">
+        <img src="../assets/bunny_with_coffe.gif" alt="Gif fofo animado" id="bunny_with_coffe">
       </v-col>
     </v-row>
   </v-container>
@@ -20,3 +20,28 @@ export default {
   name: 'NotFound'
 }
 </script>
+
+<style>
+  #bunny_with_coffe{
+    width: 10vw;
+  }
+
+  
+  @media (max-width: 1920px){
+    #bunny_with_coffe{
+          width: 15vw;
+      }
+  }
+
+  @media (max-width: 900px){
+    #bunny_with_coffe{
+          width: 35vw;
+      }
+  }
+
+  @media (max-width: 490px){
+    #bunny_with_coffe{
+          width: 40vw;
+      }
+  }
+</style>
