@@ -1,7 +1,7 @@
 <template>
-  <button @click="onClick" class="btn btn-danger">
+  <v-btn @click="onClick" class="btn-danger">
     <v-icon>mdi-delete</v-icon>
-  </button>
+  </v-btn>
 </template>
 
 <script>

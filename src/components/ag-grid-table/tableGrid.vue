@@ -3,7 +3,7 @@
     <v-hover v-slot="{ isHovering, hovering }" open-delay="100">
         <v-dialog width="auto">
           <template #activator="{ props }">
-            <v-btn class="bg-green ma-2  text-center text-subtitle-1" v-bind="hovering, props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">cadastrar </v-btn>
+            <v-btn class="bg-green ma-2  text-center text-subtitle-1" v-bind="hovering, props" :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 8 : 0" width="150px">cadastrar</v-btn>
           </template>
           <registerPatient></registerPatient>
         </v-dialog>
@@ -12,6 +12,7 @@
         :rowData="rowData"
         :columnDefs="colDefs"
         :dataTypeDefinitions="dataTypeDefinitions"
+        @cellValueChanged="onCellValueChanged"
         style="height: 45vh; width:60vw;"
         class="ag-theme-quartz text-center"
       >
@@ -24,7 +25,7 @@ import { onBeforeMount, ref } from 'vue';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { AgGridVue } from "ag-grid-vue3";
-import registerPatient from "@/components/registerPatient.vue"
+import registerPatient from "@/components/registerPatient.vue" 
 import deletePatient from '@/controllers/deletePatient';
 
 var filterParams = {
@@ -54,29 +55,27 @@ var filterParams = {
 };
 
 export default {
- name: "App",
+ name: "tableGrid",
  components: {
    AgGridVue,
+   deletePatient
  },
  setup() {
 
-  const rowData = ref([
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Tesla", sobrenome: "sobrenome Y", email: "ge.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Ford", sobrenome: "F-Series", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-    { nome: "Toyota", sobrenome: "Corolla", email: "testando.teste@gmail.com", cpf: "123.123.123-02", date: "10/03/2001", educacao: "graduado", genero: "Masculino" },
-  ]);
+  const rowData = ref([]);
 
+  const deleteRow = (data) => {
+      const allPatients = JSON.parse(localStorage.getItem('patientList')) || [];
+      const updatedPatients = allPatients.filter(patient => patient.cpf !== data.cpf);
+      localStorage.setItem('patientList', JSON.stringify(updatedPatients));
+
+      rowData.value = updatedPatients;
+    };
  
   const colDefs = ref([
     { 
       headerName: "Nome",
-      field: "nome",
+      field: "primeiro_nome",
       editable:true,
       filter: true,
       width: 150,
@@ -117,7 +116,7 @@ export default {
     },
     { 
       headerName: "Data",
-      field: "date",
+      field: "nascimento",
       filter: 'agDateColumnFilter',
       filterParams: filterParams,
       editable: true,
@@ -138,7 +137,7 @@ export default {
     },
     { 
       headerName: "Genêro",
-      field: "genero",
+      field: "sexo",
       editable:true,
       filter: true,
       width: 150,
@@ -147,23 +146,16 @@ export default {
       resizable: false
     },
     {
-      headerName: "Ação",
-      field: "action",
-      width: 100,
-      cellRendererFramework: {
-        template: `<v-btn color="error" @click="deletePatient(data)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>`,
-        methods: {
-          deleteRow(rowData) {
-            const index = rowData.rowIndex;
-            rowData.api.applyTransaction({ remove: [rowData.data] });
-          }
-        }
-      },
-      resizable: false,
-      autoHeight: true
-    }
+        headerName: "Ação",
+        field: "action",
+        width: 100,
+        cellRendererFramework: deletePatient, 
+        cellRendererParams: {
+          clicked: deleteRow 
+        },
+        resizable: false,
+        autoHeight: true
+      }
   ]);
   const dataTypeDefinitions = ref(null);
 
@@ -204,13 +196,32 @@ export default {
           },
         },
       };
+      const patientSaves = JSON.parse(localStorage.getItem('patientList')) || [];
+      rowData.value = patientSaves;
+
     });
+
+    const refreshTable = () => {
+      gridApi.refreshCells({ force: true });
+    };
+    
+    const onCellValueChanged = (event) => {
+    const updatedData = event.data;
+    const allPatients = JSON.parse(localStorage.getItem('patientList')) || [];
+    const index = allPatients.findIndex(patient => patient.cpf === updatedData.cpf);
+    if (index !== -1) {
+      allPatients[index] = updatedData;
+      localStorage.setItem('patientList', JSON.stringify(allPatients));
+    }
+
+    refreshTable();
+  };
 
   return {
     rowData,
     colDefs,
     dataTypeDefinitions,
-    deletePatient
+    onCellValueChanged
   };
   },
 };

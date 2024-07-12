@@ -46,21 +46,32 @@
             type="date"
         ></v-text-field>
 
-        <v-text-field
+        <v-select
             v-model="form.educacao"
             color="primary"
+            :items="[
+                'Ens. Fundamental Incompleto',
+                'Ens. Fundamental completo',
+                'Ens. Médio incopleto',
+                'Ens. Médio Completo',
+                'Curso Técnico',
+                'Tecnólogo',
+                'Bacharelado',
+                'Mestrado',
+                'Doutorado',
+                'Outro'
+            ]"
             label="Educação"
-            placeholder="Coloque seu nível de educação"
             variant="underlined"
-        ></v-text-field>
+        ></v-select>
 
-        <v-text-field
+        <v-select
             v-model="form.sexo"
+            :items="['Masculino', 'Feminino', 'Outro']"
             color="primary"
             label="Sexo"
-            placeholder="Coloque seu sexo"
             variant="underlined"
-        ></v-text-field>
+        ></v-select>
 
         </v-container>
 
@@ -69,7 +80,7 @@
         <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="success" @click.prevent="salvarPaciente">
+        <v-btn color="success" @click="savePatient">
             Confirmar
             <v-icon icon="mdi-check-circle" end></v-icon>
         </v-btn>
@@ -88,26 +99,51 @@
         cpf: '',
         educacao: '',
         sexo:'',
-        nascimento:''
+        nascimento: null
     });
 
-    const salvarPaciente = () => {
-        const paciente = {
+ 
+    const formatData = (data) => {
+    const dt = new Date(data);
+    const day = dt.getDate().toString().padStart(2, '0');
+    const month = (dt.getMonth() + 1).toString().padStart(2, '0');
+    const year = dt.getFullYear();
+    return `${day}/${month}/${year}`;
+};
+
+    const savePatient = () => {
+        if (form.value.nascimento) {
+            const birth_date = new Date(form.value.nascimento);
+        if (isNaN(birth_date.getTime())) {
+            console.error("Data inválida")
+        return;
+        }
+
+        const formatCPF = (cpf) => {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        };
+
+        const formatted_CPF = formatCPF(form.value.cpf);
+        const formatted_birth = formatData(birth_date);
+        const emailWithSuffix = form.value.email.includes('@') ? form.value.email : form.value.email + '@gmail.com';
+
+        const patientList = {
             primeiro_nome: form.value.primeiro_nome,
             sobrenome: form.value.sobrenome,
-            email: form.value.email,
-            cpf: form.value.cpf,
-            nascimento: form.value.nascimento,
+            email: emailWithSuffix,
+            cpf: formatted_CPF,
+            nascimento: formatted_birth,
             educacao: form.value.educacao,
             sexo: form.value.sexo,
         };
 
-        const pacientesExistentes = JSON.parse(localStorage.getItem('pacientes')) || [];
+    const pacientesExistentes = JSON.parse(localStorage.getItem('patientList')) || [];
 
-        pacientesExistentes.push(paciente);
+    pacientesExistentes.push(patientList);
 
-        localStorage.setItem('pacientes', JSON.stringify(pacientesExistentes));
-        
-        Object.keys(form.value).forEach(key => form.value[key] = '');
-};
+    localStorage.setItem('patientList', JSON.stringify(pacientesExistentes));
+    
+    Object.keys(form.value).forEach(key => form.value[key] = '');
+    }
+}
 </script>
