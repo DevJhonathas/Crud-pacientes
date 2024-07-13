@@ -33,7 +33,7 @@ Este projeto consiste em um CRUD (Create, Read, Update, Delete) desenvolvido uti
 - **Vuetify**: Framework de componentes baseado em Material Design para Vue.js.
 - **TinyMCE**: Editor de texto JavaScript que facilita a edição avançada de conteúdo.
 - **AG-grid**: Biblioteca avançada de grid para exibição e manipulação de dados tabulares.
-- **Vue-router**: Biblioteca avançada de grid para exibição e manipulação de dados tabulares.
+- **Vue-router**: Biblioteca para gerenciamento de rotas.
 
 ## Instalação e Uso
 
